@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>タイトル</title>
+</head>
+<body>
+  <table border="1">
+    <tr>
+      <th>id</th>
+      <th>スケジュール名</th>
+      <th>作成日</th>
+      <th>更新日</th>
+    </tr>
+    {% for schedule in schedules %}
+    <tr>
+      <td>{{ schedule.id }}</td>
+      <td>{{ schedule.name }}</td>
+      <td>{{ schedule.created_at }}</td>
+      <td>{{ schedule.updated_at }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

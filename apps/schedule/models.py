@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-
-
-class Base(models.Model):
-    """Base
-
-    基底モデル
-    """
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from libs.models import Base
 
 
 class Schedule(Base):
@@ -20,3 +9,6 @@ class Schedule(Base):
     スケジュール
     """
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return '{}: {}'.format(self.id, self.name)
