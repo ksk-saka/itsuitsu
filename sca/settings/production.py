@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from itsuitsu.settings.base import *
+from sca.settings.base import *
 
-DEBUG = True
+DEBUG = False
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'itsuitsu',
-        'USER': 'itsuitsu',
-        'PASSWORD': 'itsuitsu',
+        'NAME': 'sca',
+        'USER': 'sca',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
