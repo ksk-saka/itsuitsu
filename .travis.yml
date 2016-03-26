@@ -4,6 +4,6 @@ python:
 install:
   - pip install -r requirements.txt
 before_script:
-  - mysql -e 'CREATE DATABASE "sca";'
+  - mysql -e 'CREATE DATABASE sca;'
 script:
   - python manage.py test --settings=sca.settings.test
