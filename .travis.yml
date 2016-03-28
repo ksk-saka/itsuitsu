@@ -8,6 +8,6 @@ before_script:
   - mysql -e 'CREATE DATABASE sca;'
 script:
   - python manage.py test --settings=sca.settings.test
-  - coverage run manage.py test --settings=sca.settings.test
+  - coverage run --source=sca.apps.schedule manage.py test --settings=sca.settings.test
 after_success:
   - coveralls
