@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.edit import CreateView, UpdateView
-from .forms import ScheduleForm
-from .models import Schedule
+from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet
+from apps.schedule.models import Schedule
 
 
 def index(request):
@@ -23,9 +23,39 @@ class ScheduleCreate(CreateView):
 
     スケジュールを登録します。
     """
+    model = Schedule
     form_class = ScheduleForm
+    formset_class = ScheduleDateFormSet
     template_name = 'schedule/add.html'
     success_url = '/schedule/'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        formset = self.get_form(self.formset_class)
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        formset = self.get_form(self.formset_class)
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        else:
+            return self.form_invalid(form, formset)
+
+    def form_valid(self, form, formset):
+        self.object = form.save()
+        formset.instance = self.object
+        formset.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form, formset):
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
 
 
 class ScheduleUpdate(UpdateView):
