@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.crypto import get_random_string
 from django.views.generic.edit import CreateView, UpdateView
 from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet
 from apps.schedule.models import Schedule
@@ -47,7 +48,9 @@ class ScheduleCreate(CreateView):
             return self.form_invalid(form, formset)
 
     def form_valid(self, form, formset):
-        self.object = form.save()
+        self.object = form.save(commit=False)
+        self.object.code = get_random_string(30)
+        self.object.save()
         formset.instance = self.object
         formset.save()
         return redirect(self.get_success_url())

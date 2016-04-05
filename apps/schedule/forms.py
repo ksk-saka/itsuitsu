@@ -39,7 +39,7 @@ ScheduleDateFormSet = inlineformset_factory(
     Schedule,
     ScheduleDate,
     form=ScheduleDateForm,
-    extra=1,
+    extra=2,
     can_delete=False,
     min_num=1,
     validate_min=True,
