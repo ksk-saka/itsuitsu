@@ -24,6 +24,11 @@ class ScheduleViewsTests(TestCase):
         count = Schedule.objects.count()
         response = self.client.post(url, {
             'name': 'TEST NAME',
+            'scheduledate_set-0-date': '2016-01-01',
+            'scheduledate_set-TOTAL_FORMS': 3,
+            'scheduledate_set-INITIAL_FORMS': 0,
+            'scheduledate_set-MIN_NUM_FORMS': 1,
+            'scheduledate_set-MAX_NUM_FORMS': 1000,
         })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Schedule.objects.count(), count + 1)

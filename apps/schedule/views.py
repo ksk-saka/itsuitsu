@@ -50,6 +50,7 @@ class ScheduleCreate(CreateView):
     def form_valid(self, form, formset):
         self.object = form.save(commit=False)
         self.object.code = get_random_string(30)
+        self.object.full_clean()
         self.object.save()
         formset.instance = self.object
         formset.save()

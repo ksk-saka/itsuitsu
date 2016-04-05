@@ -22,7 +22,7 @@ class ScheduleDate(Base):
     スケジュール日付モデルです。
     """
     schedule = models.ForeignKey(Schedule)
-    date = models.DateTimeField(blank=False)
+    date = models.DateTimeField()
 
     def __repr__(self):
         return '{}: {}'.format(self.id, self.date)
