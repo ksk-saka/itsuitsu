@@ -2,15 +2,18 @@
 
 {% load crispy_forms_tags %}
 
-{% block title %}登録{% endblock %}
+{% block title %}つくる{% endblock %}
 
-{% block page_title %}登録{% endblock %}
+{% block page_title %}つくる{% endblock %}
 
 {% block content %}
 <form action="" method="POST">
   {% csrf_token %}
   <fieldset>
     {{ form|crispy }}
+    {{ formset.management_form }}
+    {{ formset.non_form_errors }}
+    {{ formset|crispy }}
     <div>
       <input class="btn btn-default" type="submit" value="登録">
     </div>
