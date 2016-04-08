@@ -12,8 +12,10 @@
   <fieldset>
     {{ form|crispy }}
     {{ formset.management_form }}
-    {{ formset.non_form_errors }}
     {{ formset|crispy }}
+    {% if formset.non_form_errors %}
+      {{ formset|as_crispy_errors }}
+    {% endif %}
     <div>
       <input class="btn btn-default" type="submit" value="登録">
     </div>
