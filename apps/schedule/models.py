@@ -15,6 +15,14 @@ class Schedule(Base):
     def __repr__(self):
         return '{}: {}'.format(self.id, self.name)
 
+    @property
+    def dates(self):
+        return self.scheduledate_set.all()
+
+    @property
+    def users(self):
+        return self.scheduleuser_set.all()
+
 
 class ScheduleDate(Base):
     """ScheduleDate
@@ -24,5 +32,20 @@ class ScheduleDate(Base):
     schedule = models.ForeignKey(Schedule)
     date = models.DateTimeField()
 
+    class Meta:
+        ordering = ['date']
+
     def __repr__(self):
         return '{}: {}'.format(self.id, self.date)
+
+
+class ScheduleUser(Base):
+    """ScheduleUser
+
+    スケジュールユーザモデルです。
+    """
+    schedule = models.ForeignKey(Schedule)
+    name = models.CharField(max_length=25)
+
+    def __repr__(self):
+        return '{}: {}'.format(self.id, self.name)

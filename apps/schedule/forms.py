@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ValidationError, HiddenInput
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from apps.schedule.models import Schedule, ScheduleDate
+from apps.schedule.models import Schedule, ScheduleDate, ScheduleUser
 
 
 class ScheduleForm(ModelForm):
     """ScheduleForm
 
-    スケジュール登録/編集フォームです。
+    スケジュール登録/更新フォームです。
     """
     class Meta:
         model = Schedule
@@ -24,7 +24,7 @@ class ScheduleForm(ModelForm):
 class ScheduleDateForm(ModelForm):
     """ScheduleDateForm
 
-    スケジュール日付登録/編集フォームです。
+    スケジュール日付登録/更新フォームです。
     """
     class Meta:
         model = ScheduleDate
@@ -39,7 +39,7 @@ class ScheduleDateForm(ModelForm):
 class BaseScheduleDateFormSet(BaseInlineFormSet):
     """BaseScheduleDateFormSet
 
-    スケジュール登録/編集フォームセットです。
+    スケジュール登録/更新フォームセットです。
     """
     def clean(self):
         dates = [form['date'].value() for form in self.forms if form['date'].value()]
@@ -57,3 +57,22 @@ ScheduleDateFormSet = inlineformset_factory(
     min_num=1,
     validate_min=True,
 )
+
+
+class ScheduleUserForm(ModelForm):
+    """ScheduleUserForm
+
+    スケジュールユーザ登録/更新フォームです。
+    """
+    class Meta:
+        model = ScheduleUser
+        fields = [
+            'name',
+            'schedule'
+        ]
+        labels = {
+            'name': 'ユーザ名',
+        }
+        widgets = {
+            'schedule': HiddenInput(),
+        }
