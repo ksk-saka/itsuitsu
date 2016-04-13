@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import get_random_string
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm
+from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm, ScheduleRegisterForm, ScheduleRegisterFormSet
 from apps.schedule.models import Schedule, ScheduleUser
 
 logger = logging.getLogger('sca')
@@ -60,17 +60,52 @@ class ScheduleUserCreate(AjaxTemplateMixin, CreateView):
     """
     model = ScheduleUser
     form_class = ScheduleUserForm
+    formset_class = ScheduleRegisterFormSet
     template_name = 'user/add.html'
     success_url = '/schedule/'
 
-    def get_initial(self):
-        return {
-            'schedule': self.kwargs['id'],
-        }
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        formset = self.get_form(self.formset_class)
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        formset = self.get_form(self.formset_class)
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        else:
+            return self.form_invalid(form, formset)
+
+    def form_valid(self, form, formset):
+        self.object = form.save(commit=False)
+        #self.object.code = get_random_string(30)
+        #self.object.full_clean()
+        self.object.save()
+        formset.instance = self.object
+        formset.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form, formset):
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
 
     def get_context_data(self, **kwargs):
         context = super(ScheduleUserCreate, self).get_context_data(**kwargs)
-        context['schedule_id'] = self.kwargs['id']  # 他の人のも見れるかも
+        schedule = get_object_or_404(Schedule, id=self.kwargs['id'])
+        context['schedule'] = schedule  # 他の人のも見れるかも
+        # logger.debug(dir(context['formset']))
+
+        context['form'].initial['schedule'] = schedule.id
+
+        for form in context['formset']:
+            form.fields['date'].queryset = schedule.dates
+
         return context
 
 
