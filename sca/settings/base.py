@@ -124,12 +124,12 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'sca.log'),
-            'formatter': 'standard',
-        },
+        # 'file': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.FileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs', 'sca.log'),
+        #     'formatter': 'standard',
+        # },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
