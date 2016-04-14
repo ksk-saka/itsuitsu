@@ -112,6 +112,39 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
+# logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+            'datefmt': "%Y/%m/%d %H:%M:%S"
+        },
+    },
+    'handlers': {
+        # 'file': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.FileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs', 'sca.log'),
+        #     'formatter': 'standard',
+        # },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        'sca': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }
+}
+
+
 # crispy_forms
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 

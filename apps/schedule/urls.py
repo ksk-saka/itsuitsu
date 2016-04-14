@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
-from . import views
-from .views import ScheduleCreate, ScheduleUpdate
+from apps.schedule import views
+from apps.schedule.views import ScheduleCreate, ScheduleList, ScheduleUpdate, ScheduleUserCreate
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^list/$', ScheduleList.as_view(), name='list'),
     url(r'^add/$', ScheduleCreate.as_view(), name='add'),
     url(r'^(?P<id>[0-9]+)/edit/$', ScheduleUpdate.as_view(), name='edit'),
+    url(r'^(?P<id>[0-9]+)/user-add/$', ScheduleUserCreate.as_view(), name="user_add"),
 ]
