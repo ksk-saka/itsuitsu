@@ -6,7 +6,7 @@ from django.utils.crypto import get_random_string
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm, ScheduleRegisterForm, ScheduleRegisterFormSet
-from apps.schedule.models import Schedule, ScheduleUser
+from apps.schedule.models import Schedule, ScheduleUser, ScheduleRegister
 
 logger = logging.getLogger('sca')
 
@@ -39,6 +39,16 @@ class ScheduleList(DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Schedule, code=self.request.GET.get('code'))
+
+    def get_context_data(self, **kwargs):
+        context = super(ScheduleList, self).get_context_data(**kwargs)
+        schedule = context['schedule']
+        attendances = []
+        for date in schedule.dates:
+            registers = date.scheduleregister_set.all()
+            attendances.append(tuple(register.user.id for register in registers))
+        context['attendances'] = attendances
+        return context
 
 
 class AjaxTemplateMixin(object):
