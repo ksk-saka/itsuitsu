@@ -138,7 +138,7 @@ LOGGING = {
     },
     'loggers': {
         'sca': {
-            'handlers': ['file', 'console'],
+            'handlers': ['console'],
             'level': 'DEBUG',
         },
     }

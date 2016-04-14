@@ -5,8 +5,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import get_random_string
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm, ScheduleRegisterForm, ScheduleRegisterFormSet
-from apps.schedule.models import Schedule, ScheduleUser, ScheduleRegister
+from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
+    ScheduleRegisterFormSet
+from apps.schedule.models import Schedule, ScheduleUser
 
 logger = logging.getLogger('sca')
 
@@ -93,8 +94,8 @@ class ScheduleUserCreate(AjaxTemplateMixin, CreateView):
 
     def form_valid(self, form, formset):
         self.object = form.save(commit=False)
-        #self.object.code = get_random_string(30)
-        #self.object.full_clean()
+        # self.object.code = get_random_string(30)
+        # self.object.full_clean()
         self.object.save()
         formset.instance = self.object
         formset.save()
@@ -109,7 +110,6 @@ class ScheduleUserCreate(AjaxTemplateMixin, CreateView):
         context = super(ScheduleUserCreate, self).get_context_data(**kwargs)
         schedule = get_object_or_404(Schedule, id=self.kwargs['id'])
         context['schedule'] = schedule  # 他の人のも見れるかも
-        # logger.debug(dir(context['formset']))
 
         context['form'].initial['schedule'] = schedule.id
 
