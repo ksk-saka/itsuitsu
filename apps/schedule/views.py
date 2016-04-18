@@ -8,6 +8,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
     ScheduleRegisterFormSet
 from apps.schedule.models import Schedule, ScheduleUser
+from libs.views import AjaxRequestMixin, FormsetMixin
 
 logger = logging.getLogger('sca')
 
@@ -52,19 +53,14 @@ class ScheduleList(DetailView):
         return context
 
 
-class AjaxTemplateMixin(object):
-    """AjaxTemplateMixin
+class BaseScheduleUserCreate(AjaxRequestMixin, FormsetMixin):
+    """BaseScheduleUserCreate
 
-    ajaxリクエストでなんちゃらかんちゃら
+    ScheduleUserCreateの基底クラスです。
     """
-    def dispatch(self, request, *args, **kwargs):
-        if request.is_ajax():
-            return super(AjaxTemplateMixin, self).dispatch(request, *args, **kwargs)
-        else:
-            raise Http404
 
 
-class ScheduleUserCreate(AjaxTemplateMixin, CreateView):
+class ScheduleUserCreate(BaseScheduleUserCreate, CreateView):
     """UserCreate
 
     スケジュールユーザを登録します。
@@ -75,51 +71,25 @@ class ScheduleUserCreate(AjaxTemplateMixin, CreateView):
     template_name = 'user/add.html'
     success_url = '/schedule/'
 
-    def get(self, request, *args, **kwargs):
-        self.object = None
-        form = self.get_form()
-        formset = self.get_form(self.formset_class)
-        return self.render_to_response(
-            self.get_context_data(form=form, formset=formset)
-        )
-
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        form = self.get_form()
-        formset = self.get_form(self.formset_class)
-        if form.is_valid() and formset.is_valid():
-            return self.form_valid(form, formset)
-        else:
-            return self.form_invalid(form, formset)
+    def __schedule(self):
+        return get_object_or_404(Schedule, id=self.kwargs['id'])
 
     def form_valid(self, form, formset):
-        self.object = form.save(commit=False)
-        # self.object.code = get_random_string(30)
-        # self.object.full_clean()
-        self.object.save()
-        formset.instance = self.object
-        formset.save()
-        return redirect(self.get_success_url())
-
-    def form_invalid(self, form, formset):
-        return self.render_to_response(
-            self.get_context_data(form=form, formset=formset)
-        )
+        self.form_extra_fields = {
+            'schedule': self.__schedule(),
+        }
+        return super(ScheduleUserCreate, self).form_valid(form, formset)
 
     def get_context_data(self, **kwargs):
         context = super(ScheduleUserCreate, self).get_context_data(**kwargs)
-        schedule = get_object_or_404(Schedule, id=self.kwargs['id'])
+        schedule = self.__schedule()
         context['schedule'] = schedule  # 他の人のも見れるかも
-
-        context['form'].initial['schedule'] = schedule.id
-
         for form in context['formset']:
             form.fields['date'].queryset = schedule.dates
-
         return context
 
 
-class ScheduleCreate(CreateView):
+class ScheduleCreate(FormsetMixin, CreateView):
     """ScheduleCreate
 
     スケジュールを登録します。
@@ -130,36 +100,11 @@ class ScheduleCreate(CreateView):
     template_name = 'schedule/add.html'
     success_url = '/schedule/'
 
-    def get(self, request, *args, **kwargs):
-        self.object = None
-        form = self.get_form()
-        formset = self.get_form(self.formset_class)
-        return self.render_to_response(
-            self.get_context_data(form=form, formset=formset)
-        )
-
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        form = self.get_form()
-        formset = self.get_form(self.formset_class)
-        if form.is_valid() and formset.is_valid():
-            return self.form_valid(form, formset)
-        else:
-            return self.form_invalid(form, formset)
-
     def form_valid(self, form, formset):
-        self.object = form.save(commit=False)
-        self.object.code = get_random_string(30)
-        self.object.full_clean()
-        self.object.save()
-        formset.instance = self.object
-        formset.save()
-        return redirect(self.get_success_url())
-
-    def form_invalid(self, form, formset):
-        return self.render_to_response(
-            self.get_context_data(form=form, formset=formset)
-        )
+        self.form_extra_fields = {
+            'code': get_random_string(30),
+        }
+        return super(ScheduleCreate, self).form_valid(form, formset)
 
 
 class ScheduleUpdate(UpdateView):

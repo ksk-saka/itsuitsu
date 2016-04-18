@@ -16,7 +16,7 @@ class ScheduleForm(ModelForm):
             'description',
         ]
         labels = {
-            'name': 'スケジュール名',
+            'name': '名前',
             'description': '説明',
         }
 
@@ -32,11 +32,11 @@ class ScheduleDateForm(ModelForm):
             'date',
         ]
         labels = {
-            'date': '日にち',
+            'date': '',
         }
 
 
-class BaseScheduleDateFormSet(BaseInlineFormSet):
+class ScheduleInlineFormSet(BaseInlineFormSet):
     """BaseScheduleDateFormSet
 
     スケジュール登録/更新フォームセットです。
@@ -44,14 +44,14 @@ class BaseScheduleDateFormSet(BaseInlineFormSet):
     def clean(self):
         dates = [form['date'].value() for form in self.forms if form['date'].value()]
         if len(dates) > len(set(dates)):
-            raise ValidationError('日にちが重複しています。')
+            raise ValidationError('日付が重複しています。')
 
 
 ScheduleDateFormSet = inlineformset_factory(
     Schedule,
     ScheduleDate,
     form=ScheduleDateForm,
-    formset=BaseScheduleDateFormSet,
+    formset=ScheduleInlineFormSet,
     extra=2,
     can_delete=False,
     min_num=1,
@@ -67,16 +67,12 @@ class ScheduleUserForm(ModelForm):
     class Meta:
         model = ScheduleUser
         fields = [
-            'schedule',
             'name',
             'comment',
         ]
         labels = {
-            'name': '名前',
+            'name': 'ニックネーム',
             'comment': 'コメント',
-        }
-        widgets = {
-            'schedule': HiddenInput(),
         }
 
 
@@ -91,7 +87,7 @@ class ScheduleRegisterForm(ModelForm):
             'date',
         ]
         labels = {
-            'date': '日にち',
+            'date': '',
         }
 
 
@@ -99,7 +95,7 @@ ScheduleRegisterFormSet = inlineformset_factory(
     ScheduleUser,
     ScheduleRegister,
     form=ScheduleRegisterForm,
-    formset=BaseScheduleDateFormSet,
+    formset=ScheduleInlineFormSet,
     extra=2,
     can_delete=False,
     min_num=1,
