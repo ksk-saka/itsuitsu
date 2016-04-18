@@ -5,14 +5,14 @@
     {% csrf_token %}
     <fieldset>
       {{ form|crispy }}
+    </fieldset>
+    <fieldset>
       {{ formset.management_form }}
       {{ formset|crispy }}
+      <legend>日付</legend>
       {% if formset.non_form_errors %}
         {{ formset|as_crispy_errors }}
       {% endif %}
-      <div>
-        <input type="submit" class="btn btn-default" value="登録">
-      </div>
     </fieldset>
   </form>
 </div>

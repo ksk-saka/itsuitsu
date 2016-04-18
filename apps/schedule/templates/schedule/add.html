@@ -7,18 +7,24 @@
 {% block page_title %}つくる{% endblock %}
 
 {% block content %}
-<form action="" method="POST">
-  {% csrf_token %}
-  <fieldset>
-    {{ form|crispy }}
-    {{ formset.management_form }}
-    {{ formset|crispy }}
-    {% if formset.non_form_errors %}
-      {{ formset|as_crispy_errors }}
-    {% endif %}
+<div class="well">
+  <form action="{% url 'schedule:add' %}" method="POST">
+    {% csrf_token %}
+    <fieldset>
+      <legend>イベント</legend>
+      {{ form|crispy }}
+    </fieldset>
+    <fieldset>
+      {{ formset.management_form }}
+      <legend>日付</legend>
+      {{ formset|crispy }}
+      {% if formset.non_form_errors %}
+        {{ formset|as_crispy_errors }}
+      {% endif %}
+    </fieldset>
     <div>
-      <input type="submit" class="btn btn-default" value="登録">
+      <input type="submit" class="btn btn-primary" value="登録する">
     </div>
-  </fieldset>
-</form>
+  </form>
+</div>
 {% endblock %}

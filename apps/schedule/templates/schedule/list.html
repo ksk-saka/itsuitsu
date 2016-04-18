@@ -24,7 +24,7 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th>日にち</th>
+          <th>日付</th>
           {% for date in schedule.dates %}
           <th>{{ date.date|date:'Y/m/d(D) H:i' }}</th>
           {% endfor %}
@@ -41,7 +41,7 @@
         {% endfor %}
       </tbody>
     </table>
-    <button id="add-button" class="btn btn-primary btn-sm">予定を登録する</button>
+    <button id="add-button" class="btn btn-primary">予定を登録する</button>
   </div>
 </div>
 
@@ -55,6 +55,7 @@
       <div id="modal-body" class="modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+        <button id="add-submit-button" type="button" class="btn btn-primary">登録する</button>
       </div>
     </div>
   </div>
@@ -89,6 +90,9 @@ $(function() {
       $('#modal').modal('toggle');
       formAjaxSubmit('#modal-body form', '#modal');
     });
+  });
+  $('#add-submit-button').click(function() {
+    $('#modal-body form').submit();
   });
 });
 </script>
