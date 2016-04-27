@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from apps.schedule.models import Schedule
+from apps.schedules.models import Schedule
 
 
 class ScheduleViewsTests(TestCase):
@@ -9,17 +9,17 @@ class ScheduleViewsTests(TestCase):
 
     viewsをテストします。
     """
-    fixtures = ['apps/schedule/tests/initial_data.json']
+    fixtures = ['apps/schedules/tests/initial_data.json']
 
     def test_schedule_create_view(self):
         """test_schedule_create_view
 
         ScheduleCreateクラスをテストします。
         """
-        url = reverse('schedule:add')
+        url = reverse('schedules:add')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'schedule/add.html')
+        self.assertTemplateUsed(response, 'schedules/add.html')
 
         count = Schedule.objects.count()
         response = self.client.post(url, {
@@ -40,10 +40,10 @@ class ScheduleViewsTests(TestCase):
         """
         schedule = Schedule.objects.all()[0]
 
-        url = reverse('schedule:edit', kwargs={'id': schedule.id})
+        url = reverse('schedules:edit', kwargs={'id': schedule.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'schedule/edit.html')
+        self.assertTemplateUsed(response, 'schedules/edit.html')
 
         response = self.client.post(url, {
             'name': 'TEST NAME',

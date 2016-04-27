@@ -1,4 +1,4 @@
-{% extends 'schedule/base.html' %}
+{% extends 'schedules/base.html' %}
 
 {% load crispy_forms_tags %}
 
@@ -86,7 +86,7 @@ $(function() {
     });
   }
   $('#add-button').click(function() {
-    $('#modal-body').load("{% url 'schedule:user_add' schedule.id %}", function() {
+    $('#modal-body').load("{% url 'schedules:user_add' schedule.id %}", function() {
       $('#modal').modal('toggle');
       formAjaxSubmit('#modal-body form', '#modal');
     });

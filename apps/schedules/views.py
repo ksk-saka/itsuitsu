@@ -5,9 +5,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import get_random_string
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from apps.schedule.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
+from apps.schedules.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
     ScheduleRegisterFormSet
-from apps.schedule.models import Schedule, ScheduleUser
+from apps.schedules.models import Schedule, ScheduleUser
 from libs.views import AjaxRequestMixin, FormsetMixin
 
 logger = logging.getLogger('sca')
@@ -25,7 +25,7 @@ def index(request):
     :return:
     """
     schedules = Schedule.objects.all()
-    return render(request, 'schedule/index.html', {
+    return render(request, 'schedules/index.html', {
         'schedules': schedules,
     })
 
@@ -36,7 +36,7 @@ class ScheduleList(DetailView):
     スケジュールを表示します。
     """
     model = Schedule
-    template_name = "schedule/list.html"
+    template_name = "schedules/list.html"
     context_object_name = 'schedule'
 
     def get_object(self, queryset=None):
@@ -69,7 +69,7 @@ class ScheduleUserCreate(BaseScheduleUserCreate, CreateView):
     form_class = ScheduleUserForm
     formset_class = ScheduleRegisterFormSet
     template_name = 'user/add.html'
-    success_url = '/schedule/'
+    success_url = '/schedules/'
 
     def __schedule(self):
         return get_object_or_404(Schedule, id=self.kwargs['id'])
@@ -97,8 +97,8 @@ class ScheduleCreate(FormsetMixin, CreateView):
     model = Schedule
     form_class = ScheduleForm
     formset_class = ScheduleDateFormSet
-    template_name = 'schedule/add.html'
-    success_url = '/schedule/'
+    template_name = 'schedules/add.html'
+    success_url = '/schedules/'
 
     def form_valid(self, form, formset):
         self.form_extra_fields = {
@@ -113,8 +113,8 @@ class ScheduleUpdate(UpdateView):
     スケジュールを編集します。
     """
     form_class = ScheduleForm
-    template_name = 'schedule/edit.html'
-    success_url = '/schedule/'
+    template_name = 'schedules/edit.html'
+    success_url = '/schedules/'
 
     def get_object(self, queryset=None):
         return get_object_or_404(Schedule, id=self.kwargs['id'])

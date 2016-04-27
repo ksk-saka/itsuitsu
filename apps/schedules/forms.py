@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm, ValidationError, HiddenInput
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from apps.schedule.models import Schedule, ScheduleDate, ScheduleUser, ScheduleRegister
+from apps.schedules.models import Schedule, ScheduleDate, ScheduleUser, ScheduleRegister
 
 
 class ScheduleForm(ModelForm):

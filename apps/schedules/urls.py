@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
-from apps.schedule import views
-from apps.schedule.views import ScheduleCreate, ScheduleList, ScheduleUpdate, ScheduleUserCreate
+from apps.schedules import views
+from apps.schedules.views import ScheduleCreate, ScheduleList, ScheduleUpdate, ScheduleUserCreate
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
