@@ -1,36 +1,38 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.utils import formats
+from django.utils.timezone import localtime
 from libs.models import Base
 
 
 class Schedule(Base):
     """Schedule
 
-    スケジュールデータを管理します。
+    スケジュールを管理します。
     """
     name = models.CharField(max_length=25)
     description = models.CharField(max_length=50, blank=True)
     code = models.CharField(max_length=64)
 
     def __repr__(self):
-        return '{}: {}'.format(self.id, self.name)
+        return '[{}]: {}'.format(self.id, self.name)
 
     def __str__(self):
         return self.name
 
     @property
     def dates(self):
-        return self.scheduledate_set.all()
+        return self.date_set.all()
 
     @property
     def users(self):
-        return self.scheduleuser_set.all()
+        return self.user_set.all()
 
 
-class ScheduleDate(Base):
-    """ScheduleDate
+class Date(Base):
+    """Date
 
-    スケジュールの日付データを管理します。
+    スケジュールの日付を管理します。
     """
     schedule = models.ForeignKey(Schedule)
     date = models.DateTimeField()
@@ -39,43 +41,40 @@ class ScheduleDate(Base):
         ordering = ['date']
 
     def __repr__(self):
-        return '{}: {}'.format(self.id, self.date)
+        return '[{}]: {}'.format(self.id, self.__str__())
 
     def __str__(self):
-        return self.date.strftime('%m/%d(%a) %H:%M')
+        formatted = formats.date_format(localtime(self.date), 'Y/m/d(D) H:i')
+        return formatted
 
 
-class ScheduleUser(Base):
-    """ScheduleUser
+class User(Base):
+    """User
 
-    スケジュールのユーザデータを管理します。
+    ユーザを管理します。
     """
     schedule = models.ForeignKey(Schedule)
+    attendances = models.ManyToManyField(Date, through='Attendance')
     name = models.CharField(max_length=25)
     comment = models.CharField(max_length=50, blank=True)
 
     def __repr__(self):
-        return '{}: {}'.format(self.id, self.name)
+        return '[{}]: {}'.format(self.id, self.name)
 
     def __str__(self):
         return self.name
 
-    @property
-    def registers(self):
-        return self.scheduleregister_set.all()
 
+class Attendance(Base):
+    """Attendance
 
-class ScheduleRegister(Base):
-    """ScheduleRegister
-
-    スケジュールの登録データを管理します。
+    ユーザの出欠を管理します。
     """
-
-    date = models.ForeignKey(ScheduleDate)
-    user = models.ForeignKey(ScheduleUser)
+    user = models.ForeignKey(User)
+    date = models.ForeignKey(Date)
 
     def __repr__(self):
-        return '{}: {},{},{}'.format(self.id, self.date, self.user, self.result)
+        return '[{}]: {}'.format(self.id, self.__str__())
 
     def __str__(self):
-        return '{},{}'.format(self.user, self.date)
+        return '{} - {}'.format(self.user, self.date)

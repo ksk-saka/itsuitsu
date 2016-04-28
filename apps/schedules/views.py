@@ -7,7 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from apps.schedules.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
     ScheduleRegisterFormSet
-from apps.schedules.models import Schedule, ScheduleUser
+from apps.schedules.models import Schedule, User
 from libs.views import AjaxRequestMixin, FormsetMixin
 
 logger = logging.getLogger('sca')
@@ -47,7 +47,7 @@ class ScheduleList(DetailView):
         schedule = context['schedule']
         attendances = []
         for date in schedule.dates:
-            registers = date.scheduleregister_set.all()
+            registers = date.attendance_set.all()
             attendances.append(tuple(register.user.id for register in registers))
         context['attendances'] = attendances
         return context
@@ -65,7 +65,7 @@ class ScheduleUserCreate(BaseScheduleUserCreate, CreateView):
 
     スケジュールユーザを登録します。
     """
-    model = ScheduleUser
+    model = User
     form_class = ScheduleUserForm
     formset_class = ScheduleRegisterFormSet
     template_name = 'user/add.html'
@@ -105,16 +105,3 @@ class ScheduleCreate(FormsetMixin, CreateView):
             'code': get_random_string(30),
         }
         return super(ScheduleCreate, self).form_valid(form, formset)
-
-
-class ScheduleUpdate(UpdateView):
-    """ScheduleUpdate
-
-    スケジュールを編集します。
-    """
-    form_class = ScheduleForm
-    template_name = 'schedules/edit.html'
-    success_url = '/schedules/'
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Schedule, id=self.kwargs['id'])

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm, ValidationError, HiddenInput
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from apps.schedules.models import Schedule, ScheduleDate, ScheduleUser, ScheduleRegister
+from apps.schedules.models import Schedule, Date, User, Attendance
 
 
 class ScheduleForm(ModelForm):
@@ -27,7 +27,7 @@ class ScheduleDateForm(ModelForm):
     スケジュール日付登録/更新フォームです。
     """
     class Meta:
-        model = ScheduleDate
+        model = Date
         fields = [
             'date',
         ]
@@ -49,7 +49,7 @@ class ScheduleInlineFormSet(BaseInlineFormSet):
 
 ScheduleDateFormSet = inlineformset_factory(
     Schedule,
-    ScheduleDate,
+    Date,
     form=ScheduleDateForm,
     formset=ScheduleInlineFormSet,
     extra=2,
@@ -65,7 +65,7 @@ class ScheduleUserForm(ModelForm):
     スケジュールユーザ登録/更新フォームです。
     """
     class Meta:
-        model = ScheduleUser
+        model = User
         fields = [
             'name',
             'comment',
@@ -82,7 +82,7 @@ class ScheduleRegisterForm(ModelForm):
     スケジュール登録登録/更新フォームです。
     """
     class Meta:
-        model = ScheduleRegister
+        model = Attendance
         fields = [
             'date',
         ]
@@ -92,8 +92,8 @@ class ScheduleRegisterForm(ModelForm):
 
 
 ScheduleRegisterFormSet = inlineformset_factory(
-    ScheduleUser,
-    ScheduleRegister,
+    User,
+    Attendance,
     form=ScheduleRegisterForm,
     formset=ScheduleInlineFormSet,
     extra=2,
