@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>タイトル</title>
-</head>
-<body>
-  <table border="1">
-    <tr>
-      <th>id</th>
-      <th>スケジュール名</th>
-      <th>作成日</th>
-      <th>更新日</th>
-    </tr>
-    {% for schedule in schedules %}
-    <tr>
-      <td>{{ schedule.id }}</td>
-      <td>{{ schedule.name }}</td>
-      <td>{{ schedule.created_at }}</td>
-      <td>{{ schedule.updated_at }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}TOPページ{% endblock %}
+
+{% block page_title %}TOPページ{% endblock %}
+
+{% block new_active %}{% endblock %}
+
+{% block content %}
+<a href="{% url 'schedules:new' %}" class="btn btn-primary" role="button">つくる</a>
+{% endblock %}

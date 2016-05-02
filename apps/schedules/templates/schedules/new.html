@@ -1,4 +1,4 @@
-{% extends 'schedules/base.html' %}
+{% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
 
@@ -6,9 +6,11 @@
 
 {% block page_title %}つくる{% endblock %}
 
+{% block new_active %}active{% endblock %}
+
 {% block content %}
 <div class="well">
-  <form action="{% url 'schedules:add' %}" method="POST">
+  <form action="{% url 'schedules:new' %}" method="POST">
     {% csrf_token %}
     <fieldset>
       <legend>イベント</legend>

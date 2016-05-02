@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView
 from apps.schedules.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
     ScheduleRegisterFormSet
 from apps.schedules.models import Schedule, User
@@ -13,37 +14,48 @@ from libs.views import AjaxRequestMixin, FormsetMixin
 logger = logging.getLogger('sca')
 
 # TODO: 403,404,500画面のハンドリング
-# TODO: クラス名を変更する（ex.Create->Add）
-# TODO;: URLを変更する（namespaceをいい感じに）
 
 
-def index(request):
-    """ index
+class Top(TemplateView):
+    """TopView
 
-    一覧画面です。（仮）
-    :param request:
-    :return:
+    TOPページを表示します。
     """
-    schedules = Schedule.objects.all()
-    return render(request, 'schedules/index.html', {
-        'schedules': schedules,
-    })
+    template_name = 'schedules/index.html'
 
 
-class ScheduleList(DetailView):
-    """ScheduleList
+class New(FormsetMixin, CreateView):
+    """New
 
-    スケジュールを表示します。
+    つくるページを表示します。
     """
     model = Schedule
-    template_name = "schedules/list.html"
+    form_class = ScheduleForm
+    formset_class = ScheduleDateFormSet
+    template_name = 'schedules/new.html'
+    success_url = reverse_lazy('schedules:index')
+
+    def form_valid(self, form, formset):
+        self.form_extra_fields = {
+            'code': get_random_string(30),
+        }
+        return super(New, self).form_valid(form, formset)
+
+
+class Detail(DetailView):
+    """Detail
+
+    よていページを表示します。
+    """
+    model = Schedule
+    template_name = "schedules/detail.html"
     context_object_name = 'schedule'
 
     def get_object(self, queryset=None):
         return get_object_or_404(Schedule, code=self.request.GET.get('code'))
 
     def get_context_data(self, **kwargs):
-        context = super(ScheduleList, self).get_context_data(**kwargs)
+        context = super(DetailView, self).get_context_data(**kwargs)
         schedule = context['schedule']
         attendances = []
         for date in schedule.dates:
@@ -53,23 +65,22 @@ class ScheduleList(DetailView):
         return context
 
 
-class BaseScheduleUserCreate(AjaxRequestMixin, FormsetMixin):
-    """BaseScheduleUserCreate
+class BaseUsersNew(AjaxRequestMixin, FormsetMixin):
+    """BaseUsersNew
 
-    ScheduleUserCreateの基底クラスです。
     """
 
 
-class ScheduleUserCreate(BaseScheduleUserCreate, CreateView):
-    """UserCreate
+class UsersNew(BaseUsersNew, CreateView):
+    """UsersNew
 
-    スケジュールユーザを登録します。
+    ちょうせいページを表示します。
     """
     model = User
     form_class = ScheduleUserForm
     formset_class = ScheduleRegisterFormSet
-    template_name = 'user/add.html'
-    success_url = '/schedules/'
+    template_name = 'schedules/users_new.html'
+    success_url = reverse_lazy('schedules:index')
 
     def __schedule(self):
         return get_object_or_404(Schedule, id=self.kwargs['id'])
@@ -78,30 +89,12 @@ class ScheduleUserCreate(BaseScheduleUserCreate, CreateView):
         self.form_extra_fields = {
             'schedule': self.__schedule(),
         }
-        return super(ScheduleUserCreate, self).form_valid(form, formset)
+        return super(UsersNew, self).form_valid(form, formset)
 
     def get_context_data(self, **kwargs):
-        context = super(ScheduleUserCreate, self).get_context_data(**kwargs)
+        context = super(UsersNew, self).get_context_data(**kwargs)
         schedule = self.__schedule()
         context['schedule'] = schedule  # 他の人のも見れるかも
         for form in context['formset']:
             form.fields['date'].queryset = schedule.dates
         return context
-
-
-class ScheduleCreate(FormsetMixin, CreateView):
-    """ScheduleCreate
-
-    スケジュールを登録します。
-    """
-    model = Schedule
-    form_class = ScheduleForm
-    formset_class = ScheduleDateFormSet
-    template_name = 'schedules/add.html'
-    success_url = '/schedules/'
-
-    def form_valid(self, form, formset):
-        self.form_extra_fields = {
-            'code': get_random_string(30),
-        }
-        return super(ScheduleCreate, self).form_valid(form, formset)

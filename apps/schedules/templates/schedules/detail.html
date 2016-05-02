@@ -1,10 +1,12 @@
-{% extends 'schedules/base.html' %}
+{% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
 
 {% block title %}よてい{% endblock %}
 
 {% block page_title %}よてい{% endblock %}
+
+{% block new_active %}{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -86,7 +88,7 @@ $(function() {
     });
   }
   $('#add-button').click(function() {
-    $('#modal-body').load("{% url 'schedules:user_add' schedule.id %}", function() {
+    $('#modal-body').load("{% url 'schedules:users_new' schedule.id %}", function() {
       $('#modal').modal('toggle');
       formAjaxSubmit('#modal-body form', '#modal');
     });

@@ -32,22 +32,3 @@ class ScheduleViewsTests(TestCase):
         })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Schedule.objects.count(), count + 1)
-
-    def test_schedule_update_view(self):
-        """test_schedule_update_view
-
-        ScheduleUpdateクラスをテストします。
-        """
-        schedule = Schedule.objects.all()[0]
-
-        url = reverse('schedules:edit', kwargs={'id': schedule.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'schedules/edit.html')
-
-        response = self.client.post(url, {
-            'name': 'TEST NAME',
-        })
-        self.assertEqual(response.status_code, 302)
-        e = Schedule.objects.get(pk=schedule.id)
-        self.assertEqual(e.name, 'TEST NAME')
