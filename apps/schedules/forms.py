@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm, ValidationError, HiddenInput
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from apps.schedule.models import Schedule, ScheduleDate, ScheduleUser, ScheduleRegister
+from apps.schedules.models import Schedule, Date, User, Attendance
 
 
 class ScheduleForm(ModelForm):
@@ -16,7 +16,7 @@ class ScheduleForm(ModelForm):
             'description',
         ]
         labels = {
-            'name': 'スケジュール名',
+            'name': '名前',
             'description': '説明',
         }
 
@@ -27,16 +27,16 @@ class ScheduleDateForm(ModelForm):
     スケジュール日付登録/更新フォームです。
     """
     class Meta:
-        model = ScheduleDate
+        model = Date
         fields = [
             'date',
         ]
         labels = {
-            'date': '日にち',
+            'date': '',
         }
 
 
-class BaseScheduleDateFormSet(BaseInlineFormSet):
+class ScheduleInlineFormSet(BaseInlineFormSet):
     """BaseScheduleDateFormSet
 
     スケジュール登録/更新フォームセットです。
@@ -44,14 +44,14 @@ class BaseScheduleDateFormSet(BaseInlineFormSet):
     def clean(self):
         dates = [form['date'].value() for form in self.forms if form['date'].value()]
         if len(dates) > len(set(dates)):
-            raise ValidationError('日にちが重複しています。')
+            raise ValidationError('日付が重複しています。')
 
 
 ScheduleDateFormSet = inlineformset_factory(
     Schedule,
-    ScheduleDate,
+    Date,
     form=ScheduleDateForm,
-    formset=BaseScheduleDateFormSet,
+    formset=ScheduleInlineFormSet,
     extra=2,
     can_delete=False,
     min_num=1,
@@ -65,18 +65,14 @@ class ScheduleUserForm(ModelForm):
     スケジュールユーザ登録/更新フォームです。
     """
     class Meta:
-        model = ScheduleUser
+        model = User
         fields = [
-            'schedule',
             'name',
             'comment',
         ]
         labels = {
-            'name': '名前',
+            'name': 'ニックネーム',
             'comment': 'コメント',
-        }
-        widgets = {
-            'schedule': HiddenInput(),
         }
 
 
@@ -86,20 +82,20 @@ class ScheduleRegisterForm(ModelForm):
     スケジュール登録登録/更新フォームです。
     """
     class Meta:
-        model = ScheduleRegister
+        model = Attendance
         fields = [
             'date',
         ]
         labels = {
-            'date': '日にち',
+            'date': '',
         }
 
 
 ScheduleRegisterFormSet = inlineformset_factory(
-    ScheduleUser,
-    ScheduleRegister,
+    User,
+    Attendance,
     form=ScheduleRegisterForm,
-    formset=BaseScheduleDateFormSet,
+    formset=ScheduleInlineFormSet,
     extra=2,
     can_delete=False,
     min_num=1,

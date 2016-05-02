@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}TOPページ{% endblock %}
+
+{% block page_title %}TOPページ{% endblock %}
+
+{% block new_active %}{% endblock %}
+
+{% block content %}
+<a href="{% url 'schedules:new' %}" class="btn btn-primary" role="button">つくる</a>
+{% endblock %}

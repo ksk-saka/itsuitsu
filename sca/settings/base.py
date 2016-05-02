@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'debug_toolbar',
-    'apps.schedule',
+    'apps.schedules',
 ]
 
 MIDDLEWARE_CLASSES = [

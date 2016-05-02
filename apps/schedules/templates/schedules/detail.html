@@ -1,10 +1,12 @@
-{% extends 'schedule/base.html' %}
+{% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
 
 {% block title %}よてい{% endblock %}
 
 {% block page_title %}よてい{% endblock %}
+
+{% block new_active %}{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -24,7 +26,7 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th>日にち</th>
+          <th>日付</th>
           {% for date in schedule.dates %}
           <th>{{ date.date|date:'Y/m/d(D) H:i' }}</th>
           {% endfor %}
@@ -41,7 +43,7 @@
         {% endfor %}
       </tbody>
     </table>
-    <button id="add-button" class="btn btn-primary btn-sm">予定を登録する</button>
+    <button id="add-button" class="btn btn-primary">予定を登録する</button>
   </div>
 </div>
 
@@ -55,6 +57,7 @@
       <div id="modal-body" class="modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+        <button id="add-submit-button" type="button" class="btn btn-primary">登録する</button>
       </div>
     </div>
   </div>
@@ -85,10 +88,13 @@ $(function() {
     });
   }
   $('#add-button').click(function() {
-    $('#modal-body').load("{% url 'schedule:user_add' schedule.id %}", function() {
+    $('#modal-body').load("{% url 'schedules:users_new' schedule.id %}", function() {
       $('#modal').modal('toggle');
       formAjaxSubmit('#modal-body form', '#modal');
     });
+  });
+  $('#add-submit-button').click(function() {
+    $('#modal-body form').submit();
   });
 });
 </script>
