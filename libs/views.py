@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
+from django.db import transaction
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect
 
 logger = logging.getLogger('sca')
 
@@ -30,6 +31,7 @@ class FormsetMixin(object):
         else:
             return self.form_invalid(form, formset)
 
+    @transaction.atomic
     def form_valid(self, form, formset):
         if self.form_extra_fields:
             self.object = form.save(commit=False)
