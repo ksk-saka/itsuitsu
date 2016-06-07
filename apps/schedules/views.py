@@ -6,9 +6,10 @@ from django.utils.crypto import get_random_string
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
-from apps.schedules.forms import ScheduleForm, ScheduleDateFormSet, ScheduleUserForm,\
+from apps.schedules.forms import ScheduleForm, ScheduleFormSet, ScheduleUserForm,\
     ScheduleRegisterFormSet
 from apps.schedules.models import Schedule, User
+from libs.utils import build_url
 from libs.views import AjaxRequestMixin, FormsetMixin
 
 logger = logging.getLogger('sca')
@@ -31,15 +32,21 @@ class New(FormsetMixin, CreateView):
     """
     model = Schedule
     form_class = ScheduleForm
-    formset_class = ScheduleDateFormSet
+    formset_class = ScheduleFormSet
     template_name = 'schedules/new.html'
-    success_url = reverse_lazy('schedules:index')
 
     def form_valid(self, form, formset):
         self.form_extra_fields = {
             'code': get_random_string(30),
         }
         return super(New, self).form_valid(form, formset)
+
+    def get_success_url(self):
+        return build_url(
+            'schedules:detail',
+            kwargs={'id': self.object.id},
+            get={'code': self.object.code}
+        )
 
 
 class Detail(DetailView):

@@ -9,7 +9,6 @@ logger = logging.getLogger('sca')
 class FormsetMixin(object):
     """FormsetMixin
 
-    フォームセットの表示と処理を行います。
     """
     formset_class = None
     form_extra_fields = {}
@@ -54,7 +53,6 @@ class FormsetMixin(object):
 class AjaxRequestMixin(object):
     """AjaxTemplateMixin
 
-    ajaxリクエストを受け付けます。
     """
     def dispatch(self, request, *args, **kwargs):
         if request.is_ajax():

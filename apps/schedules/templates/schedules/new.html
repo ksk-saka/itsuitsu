@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block title %}つくる{% endblock %}
@@ -8,17 +9,21 @@
 
 {% block new_active %}active{% endblock %}
 
+{% block extra_head %}
+<link href="{% static 'css/jquery.datetimepicker.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="well">
   <form action="{% url 'schedules:new' %}" method="POST">
     {% csrf_token %}
     <fieldset>
-      <legend>イベント</legend>
+      <legend>STEP1：基本情報を入力</legend>
       {{ form|crispy }}
     </fieldset>
     <fieldset>
       {{ formset.management_form }}
-      <legend>日付</legend>
+      <legend>STEP2：日付を選択* </legend>
       {{ formset|crispy }}
       {% if formset.non_form_errors %}
         {{ formset|as_crispy_errors }}
@@ -29,4 +34,16 @@
     </div>
   </form>
 </div>
+{% endblock %}
+
+{% block extra_body %}
+<script src="{% static 'js/jquery.datetimepicker.full.min.js' %}"></script>
+<script type="text/javascript">
+  $(function() {
+    $('.datetimeinput').datetimepicker({
+      format: 'Y-m-d H:i',
+      step: 15
+    });
+  });
+</script>
 {% endblock %}

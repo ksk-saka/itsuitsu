@@ -8,8 +8,8 @@ install:
 before_script:
   - mysql -e 'CREATE DATABASE sca;'
 script:
-  - pep8 --exclude=apps/schedule/migrations --max-line-length=99 apps/schedule
+  - pep8 --exclude=apps/schedules/migrations --max-line-length=99 apps/schedules
   - python manage.py test --settings=sca.settings.test
-  - coverage run --source=apps.schedule manage.py test --settings=sca.settings.test
+  - coverage run --source=apps.schedules manage.py test --settings=sca.settings.test
 after_success:
   - coveralls

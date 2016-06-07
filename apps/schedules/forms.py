@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.forms import ModelForm, ValidationError, HiddenInput
+from django.forms import ModelForm, ValidationError, TextInput
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from apps.schedules.models import Schedule, Date, User, Attendance
 
@@ -7,7 +7,6 @@ from apps.schedules.models import Schedule, Date, User, Attendance
 class ScheduleForm(ModelForm):
     """ScheduleForm
 
-    スケジュール登録/更新フォームです。
     """
     class Meta:
         model = Schedule
@@ -16,15 +15,18 @@ class ScheduleForm(ModelForm):
             'description',
         ]
         labels = {
-            'name': '名前',
-            'description': '説明',
+            'name': 'イベント名',
+            'description': '説明（任意）',
+        }
+        help_texts = {
+            'name': '（例）◯◯さん歓迎会',
+            'description': '（例）◯◯さんの歓迎会です。〆切は今週末まで。',
         }
 
 
-class ScheduleDateForm(ModelForm):
-    """ScheduleDateForm
+class DateForm(ModelForm):
+    """DateForm
 
-    スケジュール日付登録/更新フォームです。
     """
     class Meta:
         model = Date
@@ -36,26 +38,25 @@ class ScheduleDateForm(ModelForm):
         }
 
 
-class ScheduleInlineFormSet(BaseInlineFormSet):
-    """BaseScheduleDateFormSet
+class DateInlineFormSet(BaseInlineFormSet):
+    """DateInlineFormSet
 
-    スケジュール登録/更新フォームセットです。
     """
     def clean(self):
         dates = [form['date'].value() for form in self.forms if form['date'].value()]
+        if not dates:
+            raise ValidationError('日付を入力してください。')
         if len(dates) > len(set(dates)):
             raise ValidationError('日付が重複しています。')
 
 
-ScheduleDateFormSet = inlineformset_factory(
+ScheduleFormSet = inlineformset_factory(
     Schedule,
     Date,
-    form=ScheduleDateForm,
-    formset=ScheduleInlineFormSet,
-    extra=2,
+    form=DateForm,
+    formset=DateInlineFormSet,
+    extra=3,
     can_delete=False,
-    min_num=1,
-    validate_min=True,
 )
 
 
@@ -95,7 +96,7 @@ ScheduleRegisterFormSet = inlineformset_factory(
     User,
     Attendance,
     form=ScheduleRegisterForm,
-    formset=ScheduleInlineFormSet,
+    formset=DateInlineFormSet,
     extra=2,
     can_delete=False,
     min_num=1,

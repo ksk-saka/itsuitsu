@@ -17,6 +17,8 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/bootstrap-custom.css' %}" rel="stylesheet">
+
+    {% block extra_head %}{% endblock %}
   </head>
 
   <body>
@@ -58,6 +60,7 @@
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    {% block script %}{% endblock %}
+
+    {% block extra_body %}{% endblock %}
   </body>
 </html>
